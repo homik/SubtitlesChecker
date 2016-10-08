@@ -14,8 +14,6 @@ dependencies {
     compile 'com.uwetrottmann.trakt5:trakt-java:5.2.1'
     // opensubttiles api
     compile 'com.github.wtekiela:opensub4j:0.1.2'
-    // guava
-    compile group: 'com.google.guava', name: 'guava', version: '19.0'
     // rxjava
     compile group: 'io.reactivex', name: 'rxjava', version: '1.2.0'
 
