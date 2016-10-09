@@ -31,7 +31,7 @@ public class SubtitlesChecker {
 
     private final ScTraktClient trakt;
     private final MessageReceiver msgReceiver;
-    private final ScOpenSubtitlesClient opemSubtitlesClient;
+    private final ScOpenSubtitlesClient openSubtitlesClient;
 
     /**
      * Constructor
@@ -50,9 +50,16 @@ public class SubtitlesChecker {
 	    TraktAuthorizationPinProvider authorizer,
 	    MessageReceiver msgReceiver, String language) {
 
+	this(msgReceiver, new ScTraktClient(config, authorizer),
+		new ScOpenSubtitlesClient(language));
+    }
+
+    // default range just for tests
+    SubtitlesChecker(MessageReceiver msgReceiver, ScTraktClient trakt,
+	    ScOpenSubtitlesClient scOpenSubtitlesClient) {
 	this.msgReceiver = msgReceiver;
-	this.trakt = new ScTraktClient(config, authorizer);
-	this.opemSubtitlesClient = new ScOpenSubtitlesClient(language);
+	this.trakt = trakt;
+	this.openSubtitlesClient = scOpenSubtitlesClient;
     }
 
     /**
@@ -128,16 +135,16 @@ public class SubtitlesChecker {
     private EpisodeWithSubtitles getSubtitles(EpisodeToWatch e) {
 
 	// make sure logged in
-	opemSubtitlesClient.login();
+	openSubtitlesClient.login();
 
 	List<Subtitles> subs;
 
 	if (e.getImdbId() != null) {
 	    // load by id if can
-	    subs = opemSubtitlesClient.getSubtitlesByImdbId(e.getImdbId());
+	    subs = openSubtitlesClient.getSubtitlesByImdbId(e.getImdbId());
 	} else {
 	    // if has no imbdId try to search by name and episode
-	    subs = opemSubtitlesClient.getSubtitlesByNameAndEpisodeNo(
+	    subs = openSubtitlesClient.getSubtitlesByNameAndEpisodeNo(
 		    e.getShow().getName(), e.getSeason(), e.getEpisode());
 	}
 	return new EpisodeWithSubtitles(e, subs);
